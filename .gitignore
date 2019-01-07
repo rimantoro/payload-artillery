@@ -1,4 +1,3 @@
 .DS_Store
-artillery/*
 files/*.yml
 docker-compose.yml
