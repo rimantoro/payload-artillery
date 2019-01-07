@@ -1,0 +1,71 @@
+# Pastikan user sudah memiliki deposit sebelum melakukan test uini
+config:
+  target: 'http://the_service_url/api/v1'
+  phases:
+    - duration: 10
+      arrivalRate: 8
+      name: "Warm up the application"
+    - duration: 600
+      arrivalRate: 50
+      name: "Sustained max load"
+  defaults:
+    headers:
+      content-type: 'application/json'
+  variables:
+    valid_token_cust:
+      - 'put_your_auth_token_here'
+    
+scenarios:
+  - flow:
+    - post:
+        url: '/url_1'
+        headers:
+          Content-Type: 'application/json'
+          Authorization: 'Bearer {{ valid_token_cust }}'
+        json:
+          trxid: 'CB-{{ $randomString() }}'
+          trx_amount: 10000
+          trx_notes: 'Artillery loadtest'
+          campaign_detail:
+            id: 'cashback'
+            title: 'cashback'
+            desc: 'cashback loadtest'
+        capture:
+          json: '$.result.trx_hash'
+          as: 'cashback_hash'
+    - post:
+        url: '/url_2'
+        headers:
+          Content-Type: 'application/json'
+          Authorization: 'Bearer {{ valid_token_cust }}'
+        json:
+          trx_hash: '{{ cashback_hash }}'
+          confirm: 1
+          notes: ''
+    - post:
+        url: '/url_3'
+        headers:
+          Content-Type: 'application/json'
+          Authorization: 'Bearer {{ valid_token_cust }}'
+        json:
+          trxid: 'PURC-{{ $randomString() }}'
+          trx_amount: 10000
+          trx_notes: 'Artillery loadtest'
+          items:
+            0:
+              id: 'SKUDUMMY'
+              name: 'SKU Dummy'
+              price: 10000
+              qty: 1
+        capture:
+          json: '$.result.trx_hash'
+          as: 'purchase_hash'
+    - post:
+        url: '/url_4'
+        headers:
+          Content-Type: 'application/json'
+          Authorization: 'Bearer {{ valid_token_cust }}'
+        json:
+          trx_hash: '{{ purchase_hash }}'
+          confirm: 1
+          notes: ''
