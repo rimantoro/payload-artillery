@@ -1,3 +1,4 @@
+*.csv
 .DS_Store
 files/*.yml
 docker-compose.yml

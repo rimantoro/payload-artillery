@@ -2,7 +2,7 @@ FROM node:10.15-alpine
 
 ADD ./run_artillery.sh /bin/
 
-RUN npm install -g artillery --ignore-scripts \
+RUN npm install -g artillery@1.6.0-25 --ignore-scripts \
     && chmod +x /bin/run_artillery.sh
 
 VOLUME /artillery
