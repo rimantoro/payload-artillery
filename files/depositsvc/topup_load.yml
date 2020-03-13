@@ -1,0 +1,31 @@
+# Pastikan user sudah memiliki deposit sebelum melakukan test uini
+config:
+  target: 'http://host.docker.internal:8000'
+  # tls:
+  #   rejectUnauthorized: false
+  phases:
+    - duration: 60     # berapa banyak baris data di csv (header tidak di hitung)
+      arrivalRate: 10
+      name: "start"
+  defaults:
+    headers:
+      content-type: 'application/json'
+  variables:
+    api_key: 'client1key'
+    owner_id: '5e69fde7086f9e16414980a3'
+    
+scenarios:
+  - flow:
+    - post:
+        url: '/trx/topup'
+        headers:
+          Authorization: 'Bearer {{ api_key }}'
+        json:
+          trx_id: "IMAN-20200305-{{$randomString()}}-{{$randomString()}}"
+          owner_id: '{{owner_id}}'
+          amount: 10000
+          note: 'just test'
+        capture:
+          json: '$.'
+          as: 'response_trx'
+

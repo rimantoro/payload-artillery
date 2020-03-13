@@ -6,7 +6,8 @@ readonly TMP_DIR="/tmp"
 readonly OUTPUT_DIRECTORY="/artillery"
 
 dt=$(date '+%Y%m%d_%H%M%S');
-report_file=report.json
+# report_file=report.json
+report_file=$REPORT_FILE
 
 storeConfig() {
     echo "Storing artillery configuration in $ARTILLERY_CONFIG ..."
